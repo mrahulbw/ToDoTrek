@@ -11,8 +11,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply {
-                apply("convertmate.android.library")
-                apply("convertmate.android.hilt")
+                apply("todotrek.android.library")
+                apply("todotrek.android.hilt")
                 apply("org.jetbrains.kotlin.plugin.serialization")
             }
 

@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.convertmate.android.application)
-    alias(libs.plugins.convertmate.android.application.compose)
-    alias(libs.plugins.convertmate.android.hilt)
+    alias(libs.plugins.todotrek.android.application)
+    alias(libs.plugins.todotrek.android.application.compose)
+    alias(libs.plugins.todotrek.android.hilt)
 }
 
 android {
@@ -35,14 +35,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // Testing - Compose
-    //androidTestImplementation(platform(libs.androidx.compose.bom))
-    //androidTestImplementation(libs.androidx.ui.test.junit4)
-
-    //implementation(project(":core:basedesign"))
-    //implementation(projects.feature.convertor)
-    //implementation(projects.core.domain)
-    //implementation(projects.core.data)
+    implementation(projects.core.basedesign)
+    implementation(projects.core.domain)
+    implementation(projects.core.data)
 
     // Core
     implementation(libs.androidx.core.ktx)
@@ -50,17 +45,6 @@ dependencies {
 
     // Compose
     implementation(libs.androidx.activity.compose)
-
-    // Networking
-    //implementation(libs.retrofit)
-    //implementation(libs.http.logging.interceptor)
-
-    // JSON
-    //implementation(libs.retrofit.gson)
-
-    // DI - Hilt
-    //implementation(libs.hilt.android)
-    //ksp(libs.hilt.android.compiler)
 
     // Logging
     implementation(libs.timber)
