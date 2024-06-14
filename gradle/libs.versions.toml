@@ -27,6 +27,8 @@ retrofit                                = "2.11.0"
 okhttp                                  = "4.12.0"
 
 timber                                  = "5.0.1"
+appcompat = "1.7.0"
+material = "1.12.0"
 
 [libraries]
 # Test
@@ -92,6 +94,8 @@ timber                                  = { group = "com.jakewharton.timber", na
 # Dependencies of the included build-logic
 android-gradlePlugin                    = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin                     = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 androidApplication                      = { id = "com.android.application", version.ref = "agp" }
@@ -103,10 +107,10 @@ ksp                                     = { id = "com.google.devtools.ksp", vers
 kotlin-serialization                    = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 # Plugins defined by this project
-convertmate-android-application         = { id = "todotrek.android.application", version = "unspecified" }
-convertmate-android-application-compose = { id = "todotrek.android.application.compose", version = "unspecified" }
-convertmate-android-library             = { id = "todotrek.android.library", version = "unspecified" }
-convertmate-android-library-compose     = { id = "todotrek.android.library.compose", version = "unspecified" }
-convertmate-android-hilt                = { id = "todotrek.android.hilt", version = "unspecified" }
-convertmate-android-feature             = { id = "todotrek.android.feature", version = "unspecified" }
+todotrek-android-application         = { id = "todotrek.android.application", version = "unspecified" }
+todotrek-android-application-compose = { id = "todotrek.android.application.compose", version = "unspecified" }
+todotrek-android-library             = { id = "todotrek.android.library", version = "unspecified" }
+todotrek-android-library-compose     = { id = "todotrek.android.library.compose", version = "unspecified" }
+todotrek-android-hilt                = { id = "todotrek.android.hilt", version = "unspecified" }
+todotrek-android-feature             = { id = "todotrek.android.feature", version = "unspecified" }
 # End

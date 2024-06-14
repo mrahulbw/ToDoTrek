@@ -22,3 +22,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "ToDoTrek"
 include(":app")
+include(":core:basedesign")
+include(":core:database")
+include(":core:data")
+include(":core:domain")
+include(":core:common")

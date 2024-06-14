@@ -1,4 +1,4 @@
-package com.todotrek.ui.theme
+package com.todotrek.basedesign
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

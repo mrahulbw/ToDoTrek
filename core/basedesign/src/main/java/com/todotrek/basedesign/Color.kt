@@ -1,4 +1,4 @@
-package com.todotrek.ui.theme
+package com.todotrek.basedesign
 
 import androidx.compose.ui.graphics.Color
 
