@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.todotrek.R
+import com.todotrek.basedesign.WhiteBackground
 import com.todotrek.feature.todo.ToDoViewModel
 import com.todotrek.feature.todo.model.ToDoModel
 import com.todotrek.feature.todo.ui.EmptyView
@@ -116,6 +118,10 @@ fun ToDoListScreen(
         }
     }
 
+    val searchText = rememberSaveable() {
+        mutableStateOf("")
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -131,10 +137,20 @@ fun ToDoListScreen(
         },
         content = { innerPadding ->
             ContentView(
-                innerPadding,
-                toDoListUiState,
-                listState,
-                toDoData,
+                innerPadding = innerPadding,
+                toDoListUiState = toDoListUiState,
+                listState = listState,
+                toDoData = toDoData,
+                searchText = searchText.value,
+                onSearchTextChange = {
+                    searchText.value = it
+                },
+                onSearchTextClear = {
+                    searchText.value = ""
+                },
+                onSearch = {
+
+                }
             )
 
             when (addToDoUiState) {
@@ -190,7 +206,11 @@ fun ContentView(
     innerPadding: PaddingValues,
     toDoListUiState: ToDoListUiState,
     listState: LazyListState,
-    toDoData: List<ToDoModel>
+    toDoData: List<ToDoModel>,
+    searchText: String,
+    onSearchTextChange: (String) -> Unit,
+    onSearchTextClear: () -> Unit,
+    onSearch: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -213,6 +233,15 @@ fun ContentView(
                     state = listState,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     content = {
+                        item {
+                            SearchBox(
+                                text = searchText,
+                                onTextChange = onSearchTextChange,
+                                placeHolder = stringResource(R.string.search_todos),
+                                onCloseClicked = onSearchTextClear,
+                                onSearchClicked = onSearch,
+                            )
+                        }
                         items(toDoData.size) {
                             ToDoItemView(toDoItem = toDoData[it])
                         }
@@ -230,14 +259,14 @@ fun ToDoItemView(toDoItem: ToDoModel) {
             .height(100.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFF7F2F9)
+            containerColor = WhiteBackground
         ),
         shape = RectangleShape
     ) {
         Column(
             modifier = Modifier
                 .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp)
-                .background(color = Color(0xFFF7F2F9))
+                .background(color = WhiteBackground)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
