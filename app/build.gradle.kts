@@ -36,8 +36,11 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(projects.core.basedesign)
+    implementation(projects.core.common)
     implementation(projects.core.domain)
     implementation(projects.core.data)
+
+    implementation(projects.feature.todo)
 
     // Core
     implementation(libs.androidx.core.ktx)
