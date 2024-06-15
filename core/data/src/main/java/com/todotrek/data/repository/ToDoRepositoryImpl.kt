@@ -22,7 +22,6 @@ class ToDoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addToDo(newToDo: ToDoItemDomainModel) {
+    override suspend fun addToDo(newToDo: ToDoItemDomainModel) =
         toDoTrekDao.addToDo(newToDo.toEntityModel())
-    }
 }

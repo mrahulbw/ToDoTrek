@@ -21,7 +21,7 @@ fun AppNavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-        toDoListScreen(navigateToAddToDo = navController::navigateToAddToDo)
-        addToDoScreen()
+        toDoListScreen(navController)
+        addToDoScreen(navController)
     }
 }

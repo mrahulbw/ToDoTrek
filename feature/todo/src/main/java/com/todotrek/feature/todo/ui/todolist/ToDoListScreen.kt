@@ -1,4 +1,4 @@
-package com.todotrek.feature.todo.ui
+package com.todotrek.feature.todo.ui.todolist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +19,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -29,6 +31,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -42,34 +46,55 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.todotrek.convertor.R
+import com.todotrek.R
 import com.todotrek.feature.todo.ToDoViewModel
 import com.todotrek.feature.todo.model.ToDoModel
+import com.todotrek.feature.todo.ui.EmptyView
+import com.todotrek.feature.todo.ui.ErrorDialog
+import com.todotrek.feature.todo.ui.ExtendedFabView
+import com.todotrek.feature.todo.ui.LoadingView
+import com.todotrek.feature.todo.util.AddToDoAction
+import com.todotrek.feature.todo.util.AddToDoUiState
 import com.todotrek.feature.todo.util.ToDoListUiState
 import com.todotrek.feature.todo.util.convertLongToTime
+import kotlinx.coroutines.launch
 
 @Composable
-fun ToDoListRoute(navigateToAddToDo: () -> Unit) {
-    ToDoListScreen(navigateToAddToDo = navigateToAddToDo)
+fun ToDoListRoute(toDoViewModel: ToDoViewModel, navigateToAddToDo: () -> Unit) {
+    ToDoListScreen(viewModel = toDoViewModel, navigateToAddToDo = navigateToAddToDo)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToDoListScreen(
-    viewModel: ToDoViewModel = hiltViewModel(),
-    navigateToAddToDo: () -> Unit,
+    viewModel: ToDoViewModel,
+    navigateToAddToDo: () -> Unit
 ) {
     val toDoListUiState by viewModel.toDoListUiState.collectAsStateWithLifecycle()
+    val addToDoUiState by viewModel.addToDoUiStateFlow.collectAsStateWithLifecycle()
 
     val toDoData = (toDoListUiState as? ToDoListUiState.Success)?.data ?: listOf()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    val expandedFab = remember { mutableStateOf(true) }
+    val errorDialogState = rememberSaveable { mutableStateOf(false) }
+
+    val expandedFab = rememberSaveable { mutableStateOf(true) }
 
     val listState = rememberLazyListState()
+
+    val snackBarState = remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(key1 = snackBarState.value) {
+        if (snackBarState.value) {
+            scope.launch {
+                snackBarHostState.showSnackbar("ToDo Added Successfully")
+            }
+        }
+    }
 
     val expandedFabState = remember {
         derivedStateOf {
@@ -79,6 +104,16 @@ fun ToDoListScreen(
 
     LaunchedEffect(key1 = expandedFabState.value) {
         expandedFab.value = expandedFabState.value
+    }
+
+    val resetAddToDoUiState = remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = resetAddToDoUiState.value) {
+        if (resetAddToDoUiState.value) {
+            scope.launch {
+                viewModel.actionFlow.emit(AddToDoAction.None)
+            }
+        }
     }
 
     Scaffold(
@@ -91,6 +126,9 @@ fun ToDoListScreen(
                 navigateToAddToDo()
             }
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
         content = { innerPadding ->
             ContentView(
                 innerPadding,
@@ -98,6 +136,28 @@ fun ToDoListScreen(
                 listState,
                 toDoData,
             )
+
+            when (addToDoUiState) {
+                AddToDoUiState.Error -> {
+                    errorDialogState.value = true
+                }
+
+                AddToDoUiState.Success -> {
+                    snackBarState.value = true
+                    resetAddToDoUiState.value = true
+                }
+
+                AddToDoUiState.Loading,
+                AddToDoUiState.None -> {
+                    errorDialogState.value = false
+                }
+            }
+
+            if (errorDialogState.value) {
+                ErrorDialog {
+                    resetAddToDoUiState.value = true
+                }
+            }
         }
     )
 }
@@ -201,7 +261,6 @@ fun ToDoItemView(toDoItem: ToDoModel) {
                     fontWeight = FontWeight.Light,
                     fontSize = 15.sp,
                     textAlign = TextAlign.Start,
-                    lineHeight = 1.sp,
                     maxLines = 1
                 )
                 Text(
@@ -219,6 +278,6 @@ fun ToDoItemView(toDoItem: ToDoModel) {
 
 @Preview(showBackground = true)
 @Composable
-fun ConvertorPreview() {
+fun ToDoListPreview() {
     ToDoItemView(toDoItem = ToDoModel("test", "Description test"))
 }

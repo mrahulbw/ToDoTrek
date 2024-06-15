@@ -9,8 +9,18 @@ sealed interface ToDoListUiState {
     data class Success(val data: List<ToDoModel>) : ToDoListUiState
 }
 
-sealed interface AddToDoUiState {
-    data object Loading : AddToDoUiState
-    data class Error(val throwable: Throwable) : AddToDoUiState
-    data class Success(val data: List<AddToDoModel>) : AddToDoUiState
+sealed class AddToDoUiState {
+    data object Loading : AddToDoUiState()
+    data object Error : AddToDoUiState()
+    data object Success : AddToDoUiState()
+
+    data object None : AddToDoUiState()
+}
+
+sealed class AddToDoAction {
+    data class Add(val addToDoModel: AddToDoModel) : AddToDoAction()
+    data object AddSuccess : AddToDoAction()
+    data object AddError : AddToDoAction()
+
+    data object None : AddToDoAction()
 }
