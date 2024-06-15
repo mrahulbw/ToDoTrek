@@ -15,5 +15,5 @@ interface ToDoTrekDao {
     suspend fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addToDo(item: ToDoEntity)
+    suspend fun addToDo(item: ToDoEntity): Long
 }

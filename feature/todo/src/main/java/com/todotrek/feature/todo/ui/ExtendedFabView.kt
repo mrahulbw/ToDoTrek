@@ -7,7 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.todotrek.convertor.R
+import com.todotrek.R
 
 @Composable
 fun ExtendedFabView(

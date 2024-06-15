@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ToDoRepository {
     fun getToDoList(): Flow<List<ToDoItemDomainModel>>
-    suspend fun addToDo(newToDo: ToDoItemDomainModel)
+    suspend fun addToDo(newToDo: ToDoItemDomainModel): Long
 }
