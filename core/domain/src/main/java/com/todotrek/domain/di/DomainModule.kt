@@ -1,5 +1,6 @@
 package com.todotrek.domain.di
 
+import com.todotrek.domain.usecases.AddToDoUseCase
 import com.todotrek.domain.usecases.GetToDoListUseCase
 import com.todotrek.domain.repository.ToDoRepository
 import dagger.Module
@@ -13,4 +14,8 @@ internal object DomainModule {
     @Provides
     fun provideGetToDoListUseCase(toDoRepository: ToDoRepository) =
         GetToDoListUseCase(toDoRepository)
+
+    @Provides
+    fun provideAddToDoUseCase(toDoRepository: ToDoRepository) =
+        AddToDoUseCase(toDoRepository)
 }

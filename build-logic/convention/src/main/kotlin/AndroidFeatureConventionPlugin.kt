@@ -24,6 +24,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 implementation(libs.findLibrary("lifecycle-runtime-compose").get())
                 implementation(project(":core:domain"))
                 implementation(project(":core:basedesign"))
+                implementation(project(":core:common"))
 
                 implementation(libs.findLibrary("timber").get())
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="add_to_do_button">Add To Do Button</string>
+    <string name="add_todo">Add ToDo</string>
+    <string name="your_todos">Your TODOs</string>
+    <string name="press_the_button_to_add_a_todo_item">Press the + button to add a TODO item</string>
+</resources>
