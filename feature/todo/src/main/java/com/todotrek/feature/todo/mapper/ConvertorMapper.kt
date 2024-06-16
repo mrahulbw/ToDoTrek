@@ -11,6 +11,14 @@ fun ToDoItemDomainModel.toPresentationModel() = ToDoModel(
     updatedAt = updatedAt
 )
 
+fun ToDoModel.toDomainModel() = ToDoItemDomainModel(
+    title = title,
+    description = description,
+    createdAt = createdAt,
+    updatedAt = updatedAt
+)
+
+
 fun AddToDoModel.toDomainModel() = ToDoItemDomainModel(
     title = title,
     description = description,

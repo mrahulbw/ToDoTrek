@@ -9,5 +9,8 @@ android {
 
 dependencies {
     // Testing
-    testImplementation(libs.junit)
+    testImplementation(libs.bundles.test)
+    testImplementation(projects.core.common)
+
+    androidTestImplementation(libs.bundles.android.test)
 }

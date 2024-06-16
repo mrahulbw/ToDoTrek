@@ -9,11 +9,10 @@ android {
 
 dependencies {
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.android.arch.core.testing)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.bundles.test)
+    testImplementation(projects.core.common)
+
+    androidTestImplementation(libs.bundles.android.test)
 
     implementation(libs.androidx.core.ktx)
 }

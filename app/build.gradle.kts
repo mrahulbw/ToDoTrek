@@ -31,12 +31,12 @@ android {
 
 dependencies {
     // Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(libs.bundles.test)
+    testImplementation(projects.core.common)
+
+    androidTestImplementation(libs.bundles.android.test)
 
     implementation(projects.core.basedesign)
-    implementation(projects.core.common)
     implementation(projects.core.domain)
     implementation(projects.core.data)
 
