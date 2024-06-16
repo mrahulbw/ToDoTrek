@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,11 +18,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -118,14 +117,27 @@ fun ToDoListScreen(
         }
     }
 
-    val searchText = rememberSaveable() {
+    val searchQueryState = rememberSaveable {
         mutableStateOf("")
+    }
+
+    val searchButtonState = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = searchButtonState.value) {
+        if (searchButtonState.value) {
+            searchButtonState.value = false
+            scope.launch {
+                viewModel.searchData(searchQueryState.value)
+            }
+        }
     }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopBar(scrollBehavior)
+            TopBar(scrollBehavior = scrollBehavior)
         },
         floatingActionButton = {
             ExtendedFabView(expandedFab.value) {
@@ -141,15 +153,21 @@ fun ToDoListScreen(
                 toDoListUiState = toDoListUiState,
                 listState = listState,
                 toDoData = toDoData,
-                searchText = searchText.value,
-                onSearchTextChange = {
-                    searchText.value = it
+                searchQuery = searchQueryState.value,
+                onSearchQueryChange = {
+                    searchQueryState.value = it
+                    searchButtonState.value = true
                 },
-                onSearchTextClear = {
-                    searchText.value = ""
+                onSearchClear = {
+                    if (searchQueryState.value.isNotBlank()) {
+                        searchQueryState.value = ""
+                        searchButtonState.value = true
+                    }
                 },
-                onSearch = {
-
+                onSearchClicked = {
+                    if (searchQueryState.value.isNotBlank()) {
+                        searchButtonState.value = true
+                    }
                 }
             )
 
@@ -181,7 +199,7 @@ fun ToDoListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(scrollBehavior: TopAppBarScrollBehavior) {
-    TopAppBar(
+    MediumTopAppBar(
         modifier = Modifier
             .shadow(elevation = 8.dp),
         title = {
@@ -195,9 +213,12 @@ fun TopBar(scrollBehavior: TopAppBarScrollBehavior) {
         },
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFFFFFFFF),
-            scrolledContainerColor = Color(0xFFFFFFFF)
-        )
+            containerColor = WhiteBackground,
+            scrolledContainerColor = WhiteBackground
+        ),
+        actions = {
+
+        }
     )
 }
 
@@ -207,10 +228,10 @@ fun ContentView(
     toDoListUiState: ToDoListUiState,
     listState: LazyListState,
     toDoData: List<ToDoModel>,
-    searchText: String,
-    onSearchTextChange: (String) -> Unit,
-    onSearchTextClear: () -> Unit,
-    onSearch: () -> Unit
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchClear: () -> Unit,
+    onSearchClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -235,11 +256,11 @@ fun ContentView(
                     content = {
                         item {
                             SearchBox(
-                                text = searchText,
-                                onTextChange = onSearchTextChange,
+                                searchQuery = searchQuery,
+                                onSearchQueryChange = onSearchQueryChange,
                                 placeHolder = stringResource(R.string.search_todos),
-                                onCloseClicked = onSearchTextClear,
-                                onSearchClicked = onSearch,
+                                onSearchClear = onSearchClear,
+                                onSearchClicked = onSearchClicked
                             )
                         }
                         items(toDoData.size) {

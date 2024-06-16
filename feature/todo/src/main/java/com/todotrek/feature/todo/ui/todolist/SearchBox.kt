@@ -36,10 +36,10 @@ import com.todotrek.basedesign.WhiteBackground
 
 @Composable
 fun SearchBox(
-    text: String,
-    onTextChange: (String) -> Unit,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
     placeHolder: String,
-    onCloseClicked: () -> Unit,
+    onSearchClear: () -> Unit,
     onSearchClicked: () -> Unit,
 ) {
     Box(
@@ -63,15 +63,15 @@ fun SearchBox(
                 .background(WhiteBackground)
                 .height(60.dp),
             shape = RoundedCornerShape(12.dp),
-            value = text,
+            value = searchQuery,
             onValueChange = {
-                onTextChange(it)
+                onSearchQueryChange(it)
             },
             placeholder = {
                 Text(
                     text = placeHolder,
                     color = MaterialTheme.colorScheme.primary,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                 )
             },
@@ -87,13 +87,12 @@ fun SearchBox(
             },
             trailingIcon = {
                 IconButton(onClick = {
-                    onCloseClicked()
-                }) {
+                    onSearchClear()
+                }, enabled = searchQuery.isNotBlank()) {
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = null,
-                        tint = Cranberry,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(22.dp),
                     )
                 }
             },
@@ -108,10 +107,9 @@ fun SearchBox(
             singleLine = true,
             textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 11.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Normal,
-
-                ),
+            ),
         )
         SearchBarDivider(
             modifier = Modifier
@@ -137,10 +135,10 @@ fun SearchBarDivider(
 @Composable
 fun SearchBoxPreview() {
     SearchBox(
-        text = "",
-        onTextChange = {},
+        searchQuery = "",
+        onSearchQueryChange = {},
         placeHolder = "Search Here",
-        onCloseClicked = {},
+        onSearchClear = {},
         onSearchClicked = {},
     )
 }

@@ -12,11 +12,15 @@ import com.todotrek.feature.todo.util.AddToDoUiState
 import com.todotrek.feature.todo.util.ToDoListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -29,13 +33,18 @@ class ToDoViewModel @Inject constructor(
     private val addToDoUseCase: AddToDoUseCase
 ) : ViewModel() {
     val actionFlow = MutableSharedFlow<AddToDoAction>()
+
     private val addToDoUiStateMutableFlow: MutableStateFlow<AddToDoUiState> =
         MutableStateFlow(AddToDoUiState.None)
+
     val addToDoUiStateFlow: MutableStateFlow<AddToDoUiState>
         get() = addToDoUiStateMutableFlow
 
+    private val searchTriggerFlow = MutableSharedFlow<String>(replay = 1)
+
     init {
         viewModelScope.launch {
+            searchData("")
             handleActions()
         }
     }
@@ -70,24 +79,31 @@ class ToDoViewModel @Inject constructor(
         }
     }
 
-    val toDoListUiState: StateFlow<ToDoListUiState> = geToDoListUseCase.invoke()
-        .map { result ->
-            result.fold(
-                onSuccess = { currenciesList ->
-                    if (currenciesList.isEmpty()) {
-                        ToDoListUiState.Error(Exception())
-                    } else {
-                        currenciesList.map {
-                            it.toPresentationModel()
-                        }.run {
-                            ToDoListUiState.Success(this)
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    val toDoListUiState: StateFlow<ToDoListUiState> = searchTriggerFlow
+        .debounce(500)
+        .flatMapLatest { query ->
+            geToDoListUseCase.invoke()
+                .map { result ->
+                    result.fold(
+                        onSuccess = { toDoList ->
+                            if (toDoList.isEmpty()) {
+                                ToDoListUiState.Error(Exception())
+                            } else {
+                                toDoList.map {
+                                    it.toPresentationModel()
+                                }.run {
+                                    ToDoListUiState.Success(this.filter {
+                                        it.title.contains(query.lowercase())
+                                    })
+                                }
+                            }
+                        },
+                        onFailure = {
+                            ToDoListUiState.Error(it)
                         }
-                    }
-                },
-                onFailure = {
-                    ToDoListUiState.Error(it)
+                    )
                 }
-            )
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
@@ -107,5 +123,9 @@ class ToDoViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    suspend fun searchData(query: String) {
+        searchTriggerFlow.emit(query)
     }
 }

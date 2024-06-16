@@ -24,3 +24,10 @@ sealed class AddToDoAction {
 
     data object None : AddToDoAction()
 }
+
+sealed class SearchAction {
+    data class Search(val query: String) : SearchAction()
+    data object Clear : SearchAction()
+
+    data object None : SearchAction()
+}
