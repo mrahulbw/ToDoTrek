@@ -50,7 +50,7 @@ class GetToDoListUseCaseTest {
             response.test {
                 this.awaitItem().fold(
                     onSuccess = {
-                                assertEquals(expectedResponse, it)
+                        assertEquals(expectedResponse, it)
                     },
                     onFailure = {
                         assertEquals(expectedErrorResponse, it)

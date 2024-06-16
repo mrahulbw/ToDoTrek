@@ -225,7 +225,7 @@ fun TopBar(scrollBehavior: TopAppBarScrollBehavior) {
 @Composable
 fun ContentView(
     innerPadding: PaddingValues,
-    toDoListUiState: ToDoListUiState,
+    toDoListUiState: ToDoListUiState<ToDoModel>,
     listState: LazyListState,
     toDoData: List<ToDoModel>,
     searchQuery: String,

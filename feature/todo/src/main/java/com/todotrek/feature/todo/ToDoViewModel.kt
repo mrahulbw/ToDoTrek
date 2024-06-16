@@ -7,6 +7,7 @@ import com.todotrek.feature.todo.model.AddToDoModel
 import com.todotrek.domain.usecases.AddToDoUseCase
 import com.todotrek.domain.usecases.GetToDoListUseCase
 import com.todotrek.feature.todo.mapper.toDomainModel
+import com.todotrek.feature.todo.model.ToDoModel
 import com.todotrek.feature.todo.util.AddToDoAction
 import com.todotrek.feature.todo.util.AddToDoUiState
 import com.todotrek.feature.todo.util.ToDoListUiState
@@ -79,8 +80,8 @@ class ToDoViewModel @Inject constructor(
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val toDoListUiState: StateFlow<ToDoListUiState> = searchTriggerFlow
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val toDoListUiState: StateFlow<ToDoListUiState<ToDoModel>> = searchTriggerFlow
         .debounce(500)
         .flatMapLatest { query ->
             geToDoListUseCase.invoke()
