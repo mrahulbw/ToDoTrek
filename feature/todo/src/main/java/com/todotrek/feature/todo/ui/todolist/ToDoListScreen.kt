@@ -18,11 +18,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.todotrek.R
+import com.todotrek.basedesign.WhiteBackground
 import com.todotrek.feature.todo.ToDoViewModel
 import com.todotrek.feature.todo.model.ToDoModel
 import com.todotrek.feature.todo.ui.EmptyView
@@ -116,10 +117,27 @@ fun ToDoListScreen(
         }
     }
 
+    val searchQueryState = rememberSaveable {
+        mutableStateOf("")
+    }
+
+    val searchButtonState = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = searchButtonState.value) {
+        if (searchButtonState.value) {
+            searchButtonState.value = false
+            scope.launch {
+                viewModel.searchData(searchQueryState.value)
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopBar(scrollBehavior)
+            TopBar(scrollBehavior = scrollBehavior)
         },
         floatingActionButton = {
             ExtendedFabView(expandedFab.value) {
@@ -131,10 +149,26 @@ fun ToDoListScreen(
         },
         content = { innerPadding ->
             ContentView(
-                innerPadding,
-                toDoListUiState,
-                listState,
-                toDoData,
+                innerPadding = innerPadding,
+                toDoListUiState = toDoListUiState,
+                listState = listState,
+                toDoData = toDoData,
+                searchQuery = searchQueryState.value,
+                onSearchQueryChange = {
+                    searchQueryState.value = it
+                    searchButtonState.value = true
+                },
+                onSearchClear = {
+                    if (searchQueryState.value.isNotBlank()) {
+                        searchQueryState.value = ""
+                        searchButtonState.value = true
+                    }
+                },
+                onSearchClicked = {
+                    if (searchQueryState.value.isNotBlank()) {
+                        searchButtonState.value = true
+                    }
+                }
             )
 
             when (addToDoUiState) {
@@ -165,7 +199,7 @@ fun ToDoListScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(scrollBehavior: TopAppBarScrollBehavior) {
-    TopAppBar(
+    MediumTopAppBar(
         modifier = Modifier
             .shadow(elevation = 8.dp),
         title = {
@@ -179,9 +213,12 @@ fun TopBar(scrollBehavior: TopAppBarScrollBehavior) {
         },
         scrollBehavior = scrollBehavior,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFFFFFFFF),
-            scrolledContainerColor = Color(0xFFFFFFFF)
-        )
+            containerColor = WhiteBackground,
+            scrolledContainerColor = WhiteBackground
+        ),
+        actions = {
+
+        }
     )
 }
 
@@ -190,7 +227,11 @@ fun ContentView(
     innerPadding: PaddingValues,
     toDoListUiState: ToDoListUiState,
     listState: LazyListState,
-    toDoData: List<ToDoModel>
+    toDoData: List<ToDoModel>,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onSearchClear: () -> Unit,
+    onSearchClicked: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -213,6 +254,15 @@ fun ContentView(
                     state = listState,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     content = {
+                        item {
+                            SearchBox(
+                                searchQuery = searchQuery,
+                                onSearchQueryChange = onSearchQueryChange,
+                                placeHolder = stringResource(R.string.search_todos),
+                                onSearchClear = onSearchClear,
+                                onSearchClicked = onSearchClicked
+                            )
+                        }
                         items(toDoData.size) {
                             ToDoItemView(toDoItem = toDoData[it])
                         }
@@ -230,14 +280,14 @@ fun ToDoItemView(toDoItem: ToDoModel) {
             .height(100.dp)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFF7F2F9)
+            containerColor = WhiteBackground
         ),
         shape = RectangleShape
     ) {
         Column(
             modifier = Modifier
                 .padding(start = 12.dp, top = 8.dp, bottom = 8.dp, end = 12.dp)
-                .background(color = Color(0xFFF7F2F9))
+                .background(color = WhiteBackground)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start

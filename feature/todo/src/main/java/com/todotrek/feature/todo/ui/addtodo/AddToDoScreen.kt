@@ -44,11 +44,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.todotrek.R
 import com.todotrek.feature.todo.model.AddToDoModel
-import com.todotrek.feature.todo.ui.ErrorDialog
 import com.todotrek.feature.todo.util.AddToDoAction
 import com.todotrek.feature.todo.util.AddToDoUiState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun AddToDoRoute(toDoViewModel: ToDoViewModel, navigateBack: () -> Unit) {
