@@ -7,9 +7,8 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.turbine.testing)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.android.arch.core.testing)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.io.mockk)
+    // Testing
+    testImplementation(libs.bundles.test)
+
+    androidTestImplementation(libs.bundles.android.test)
 }

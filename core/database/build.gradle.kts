@@ -17,22 +17,11 @@ android {
 
 dependencies {
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.turbine.testing)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.android.arch.core.testing)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.io.mockk)
+    testImplementation(libs.bundles.test)
+    testImplementation(projects.core.common)
 
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.turbine.testing)
-    androidTestImplementation(libs.mockito.kotlin)
-    androidTestImplementation(libs.android.arch.core.testing)
-    androidTestImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.io.mockk)
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.bundles.android.test)
+    androidTestImplementation(libs.bundles.test)
 
     implementation(libs.datastore.preferences)
 

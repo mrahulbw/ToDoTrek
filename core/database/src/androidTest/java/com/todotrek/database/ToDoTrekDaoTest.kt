@@ -25,6 +25,7 @@ class ToDoTrekDaoTest {
     @Before
     fun setupDatabase() {
         //MockitoAnnotations.openMocks(this)
+        //database = mockk()
 
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
@@ -58,4 +59,24 @@ class ToDoTrekDaoTest {
             }
         }
     }
+
+    /*@Test
+    fun test_some_method() = runTest {
+        val item = ToDoEntity(
+            title = "Test 1",
+            description = "Description",
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis(),
+        )
+
+        val expectedResult: Flow<List<ToDoEntity>> = flow {
+            listOf(item)
+        }
+
+        coEvery { database.toDoTrekDao() } returns dao
+        coEvery { dao.getToDoList() } returns expectedResult
+
+        val result = dao.getToDoList()
+        assertEquals(expectedResult, result)
+    }*/
 }
