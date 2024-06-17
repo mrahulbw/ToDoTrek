@@ -1,6 +1,6 @@
-# My Android Application
+# ToDoTrek
 
-Welcome to the repository for ToDoTrek This README provides an overview of the project, including the tech stack, architecture, setup instructions, and more.
+Welcome to the repository for ToDoTrek! This README provides an overview of the project, including the tech stack, architecture, setup instructions, and more.
 
 ## Table of Contents
 
